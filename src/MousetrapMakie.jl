@@ -63,31 +63,35 @@ module MousetrapMakie
                   
             connect_signal_render!(
 				function signal_render(self, ctx)
-					screen = gma.screen
-					if !isopen(screen) return false end
-					screen.render_tick[] = nothing
-					glarea = screen.glscreen
-					glarea.framebuffer_id[] = glGetIntegerv(GL_FRAMEBUFFER_BINDING)
-					GLMakie.render_frame(screen) 
+					let 
+                        screen = gma.screen
+					    if !isopen(screen) return false end
+					    screen.render_tick[] = nothing
+					    glarea = screen.glscreen
+					    glarea.framebuffer_id[] = glGetIntegerv(GL_FRAMEBUFFER_BINDING)
+					    GLMakie.render_frame(screen) 
+                    end
 					return true
 				end, glarea)
 
             connect_signal_resize!(
             function on_makie_area_resize(self, w, h)
-                events = gma.scene.events
-                screen = gma.screen
+                let
+                    events = gma.scene.events
+                    screen = gma.screen
 
-                scale = screen.scalefactor[] / Mousetrap.get_scale_factor(gma)
-                w, h = round.(Int, (w, h) ./ scale )
+                    scale = screen.scalefactor[] / Mousetrap.get_scale_factor(gma)
+                    w, h = round.(Int, (w, h) ./ scale )
 
-                gma.framebuffer_size.x = w
-                gma.framebuffer_size.y = h
-                ShaderAbstractions.switch_context!(gma)
+                    gma.framebuffer_size.x = w
+                    gma.framebuffer_size.y = h
+                    ShaderAbstractions.switch_context!(gma)
     
-                events.window_area[] = Recti(minimum(events.window_area[]), w, h)
-                events.window_dpi[] = Mousetrap.calculate_monitor_dpi(gma)
+                    events.window_area[] = Recti(minimum(events.window_area[]), w, h)
+                    events.window_dpi[] = Mousetrap.calculate_monitor_dpi(gma)
             
-                queue_render(glarea)
+                    queue_render(glarea) 
+                end
                 return nothing
             end, glarea)
 
