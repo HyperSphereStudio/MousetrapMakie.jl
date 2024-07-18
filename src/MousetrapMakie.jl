@@ -3,7 +3,7 @@ Adds `GLMakieArea`, a widget that allows to render a Makie plot to a Mousetrap w
 """
 module MousetrapMakie
 
-    export GLMakieArea, create_glmakie_screen
+    export GLMakieArea, create_glmakie_screen, GtkGLMakieFigure
 
     using Mousetrap
     using ModernGL, GLMakie, Colors, GeometryBasics, ShaderAbstractions
@@ -163,6 +163,21 @@ module MousetrapMakie
     Makie.scroll(::Scene, ::GLMakieArea) = nothing
     Makie.hasfocus(::Scene, ::GLMakieArea) = nothing
     Makie.entered_window(::Scene, ::GLMakieArea) = nothing
+	
+	"""
+		Wrap a figure in an area to display to a GLMakieArea and screen
+	"""
+	function GtkGLMakieFigure(fig::Figure) 
+		canvas = GLMakieArea()
+    
+		connect_signal_realize!(canvas) do self
+			screen = create_glmakie_screen(canvas)
+			display(screen, fig)
+			return nothing
+		end
+
+		canvas
+	end
 
     """
     ```
