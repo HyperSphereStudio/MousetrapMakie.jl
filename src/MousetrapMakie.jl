@@ -65,7 +65,7 @@ module MousetrapMakie
 				function signal_render(self, ctx)
 					screen = gma.screen
 					if !isopen(screen) return false end
-					screen.render_tick[] = nothing
+					screen.render_tick[] = Makie.BackendTick
 					screen.glscreen.framebuffer_id[] = glGetIntegerv(GL_FRAMEBUFFER_BINDING)
 					GLMakie.render_frame(screen) 
 					return true
@@ -154,7 +154,10 @@ module MousetrapMakie
     # ignore makie event model, use the mousetrap event controllers instead
     Makie.window_open(::Scene, ::GLMakieArea) = nothing
     Makie.disconnect!(::GLMakieArea, f) = nothing
-    GLMakie.pollevents(::GLMakie.Screen{GLMakieArea}) = nothing
+	function GLMakie.pollevents(screen::GLMakie.Screen{GLMakieArea}, frame_state::Makie.TickState)
+		screen.render_tick[] = frame_state
+		return
+	end
     Makie.mouse_buttons(::Scene, ::GLMakieArea) = nothing
     Makie.keyboard_buttons(::Scene, ::GLMakieArea) = nothing
     Makie.dropped_files(::Scene, ::GLMakieArea) = nothing
