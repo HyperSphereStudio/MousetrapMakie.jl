@@ -13,4 +13,4 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Mousetrap = "5deeb4b9-6e04-4da7-8b7f-c77fb1eae65e"
 
 [compat]
-GLMakie = "0.10"
+GLMakie = "0.10.18"

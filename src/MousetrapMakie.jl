@@ -209,7 +209,7 @@ module MousetrapMakie
         ]
 
         screen = GLMakie.Screen(
-            area, shader_cache, fb,
+            area, false, shader_cache, fb,
             config, false,
             nothing,
             Dict{WeakRef, GLMakie.ScreenID}(),
